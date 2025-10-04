@@ -36,8 +36,9 @@ const mockProfiles = [
 ];
 
 const Home = () => {
-  const [profiles, setProfiles] = useState(mockProfiles);
+  const [profiles, setProfiles] = useState<typeof mockProfiles>([]);
   const [credits, setCredits] = useState(5);
+  const [isSearching, setIsSearching] = useState(false);
 
   const handleSwipe = (direction: "left" | "right") => {
     // Remove the first profile
@@ -56,8 +57,13 @@ const Home = () => {
   const handleFindMatch = () => {
     if (credits > 0) {
       setCredits(credits - 1);
-      // Simulate finding a new match
-      console.log("Finding match...");
+      setIsSearching(true);
+      
+      // Simulate finding matches with animation
+      setTimeout(() => {
+        setProfiles(mockProfiles);
+        setIsSearching(false);
+      }, 2000);
     }
   };
 
@@ -66,7 +72,26 @@ const Home = () => {
       <TopBar credits={credits} />
       
       <main className="flex-1 container max-w-md mx-auto px-4 py-6 flex flex-col">
-        {profiles.length > 0 ? (
+        {isSearching ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center space-y-6 max-w-sm animate-fade-in">
+              <div className="text-6xl animate-pulse">✨</div>
+              <div className="space-y-2">
+                <h2 className="text-xl font-bold bg-gradient-to-r from-primary via-accent to-destructive bg-clip-text text-transparent">
+                  Finding your match...
+                </h2>
+                <p className="text-muted-foreground">
+                  Searching for someone special just for you!
+                </p>
+              </div>
+              <div className="flex justify-center gap-2">
+                <div className="w-3 h-3 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                <div className="w-3 h-3 bg-accent rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                <div className="w-3 h-3 bg-destructive rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+              </div>
+            </div>
+          </div>
+        ) : profiles.length > 0 ? (
           <>
             <div className="flex-1 flex items-center justify-center">
               <MatchCard profile={profiles[0]} onSwipe={handleSwipe} />
@@ -74,7 +99,7 @@ const Home = () => {
           </>
         ) : (
           <div className="flex-1 flex items-center justify-center">
-            <div className="text-center space-y-6 max-w-sm">
+            <div className="text-center space-y-6 max-w-sm animate-fade-in">
               <div className="text-6xl">🔍</div>
               <div className="space-y-2">
                 <h2 className="text-xl font-bold">Ready to find someone?</h2>
